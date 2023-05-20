@@ -1,14 +1,17 @@
-import {configureStore} from "@reduxjs/toolkit"
-import numberSliceReducer from "./reducers/numberSlice"
-import number2SliceReducer from "./reducers/number2Slice"
-import laptopSliceReducer from './reducers/laptopSlice'
+import { configureStore } from "@reduxjs/toolkit";
+import postSliceReducer from "./reducers/postSlice";
+import numberReducer from "./reducers/numberSlice";
+import useReducer  from "./reducers/userSlice";
+import commentsSliceReducer from './reducers/commentSlice'
 
 const store = configureStore({
-    reducer:{
-        numberSlice: numberSliceReducer,
-        numbre2Slice : number2SliceReducer,
-        laptopSlice: laptopSliceReducer
-    },
+  //configure store eken reducers okkom ekata ekatu krala eka reducer ekak hadana eka krnanwa
+  reducer: {
+    post: postSliceReducer, //initial state eka pass wenwa mekata postslice eken, but configurestore ekata okkom watenw
+    number: numberReducer,
+    user: useReducer,
+    comments: commentsSliceReducer
+  },
 });
 
 

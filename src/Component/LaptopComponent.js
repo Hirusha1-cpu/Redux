@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addLaptop, laptopSliceSelector } from "../store/reducers/laptopSlice";
+import { addLaptop, laptopSliceSelector } from "../store/reducers/laptopSlice2";
 
 
 

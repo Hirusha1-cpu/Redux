@@ -1,38 +1,59 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createReducer ,createSelector} from "@reduxjs/toolkit"
 
 const initialState = {
-  number: 0,
-  computers: [],
-};
-const reducerGen = (key = "number", oparator = "+") => {
-  if (oparator === "+") {
-    return (state, action) => {
-      state[key] += action.payload;
-    };
-  } else if (oparator === "-") {
-    return (state, action) => {
-      state[key] -= action.payload;
-    };
-  }
+    number: 0,
+    users:[]
+}
+export const increment = createAction('number-increment',(name, value, city)=>{
+    return {
+        payload:{
+            name,
+            value,
+            city
+        }
+    }
+})
+export const decrement = createAction('number-decrement')
+export const getUsers = createAsyncThunk('number/getUsers', async()=>{
+    const res = await fetch("https://jsonplaceholder.typicode.com/users");
+    const data = await res.json();
+    if(Array.isArray(data)){
+        return data;
+    }else{
+        return {err:'some error'}
+    }
+})
+
+const numberReducer = createReducer(initialState, (builder)=> {
+    builder.addCase(increment,(state, action)=>{
+        state.number += action.payload.value
+    }).addCase(decrement, (state, action)=>{
+        state.number -= action.payload.value
+    
+    }).addCase(getUsers.pending, (state, action)=>{
+        state.loading = "pending";
+    }).addCase(getUsers.fulfilled, (state, action)=>{
+        state.users = action.payload;
+        state.loading = "successfull";
+        state.error = null;
+
+    }).addCase(getUsers.rejected, (state, action) => {
+        state.error = action.payload.message;
+        state.loading = "error";
+      });
+
+
+})
+
+const numberSel = (store)=> {
+   
+    return store.number.number
 };
 
-const numberSlice = createSlice({
-  // this creates a slice and action too
-  name: "number",
-  initialState,
-  reducers: {
-    // increment: (state, action) => ({
-    //   number: state.number + action.payload,
-    // }),
-    increment: reducerGen(),
-    // decrement: (state, action) => ({
-    //   number: state.number - action.payload,
-    // }),
-    decrement: reducerGen("number", "-"),
-  },
-});
 
-export const { increment, decrement } = numberSlice.actions;
-export const numberSliceSelector = (store) => store.numberSlice.number
-export default numberSlice.reducer; //ekai gnne reducers walin eka hinda thama me reducer kiyla witrk danne
-// mewain eka reducer kenek generate wenawa
+
+export const numberSelector = createSelector([numberSel],(num)=>{ // post sel eke target krala thyena thana witrak wenas unot me function eka trigger krnna
+    console.log("number is running");
+    return num;
+})
+export default numberReducer;
